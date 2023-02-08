@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Forecast</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+<script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
+
+<link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+	
+	<nav id="nav" class="navbar fixed-top">
+  		<div class="container-fluid">
+  			<div class="nav-box element-flex">
+		    	<a  th:href="@{/}" style="color: white;">Weather app</a>
+		    </div>
+  		</div>
+	</nav>	
+	
+	<section class="vh-100">
+	  <div class="container py-5 h-100">
+	
+	    <div class="row d-flex justify-content-center align-items-center h-100">
+	      <div>
+	
+	        <div class="card" style="border-radius: 35px;" id="card">
+	          <div class="card-body p-4 animate-bottom">
+	
+	            <div class="d-flex">
+	              <h6 class="flex-grow-1">[[${weatherData.name}]], [[${weatherData.sys.country}]]</h6>
+	          		<div class="d-flex flex-column text-center  mb-4">
+	          			<h6 id="sunrise"></h6>
+	          			<h6 id="sunset"></h6>
+	          		</div>
+	            </div>
+				
+		            <div class="d-flex flex-column text-center mb">
+		               <div>
+			             <img id="weather-icon" src="" width="100px">
+			           </div>
+		            	<div class="d-flex justify-content-center align-items-center">
+						  <div class="flex-column mr mt-2">
+						    <h6 id="min-temp">Min [[${weatherData.main.temp_min}]] &#8451;</h6>
+						    <h6 id="max-temp">Max [[${weatherData.main.temp_max}]] &#8451;</h6>
+						  </div>
+						  	<h6 id="temp" class="display-2 font-weight-bold" style="color: #1C2331;"> [[${weatherData.main.temp}]] </h6>
+						  	<div class="flex-column-links ml">
+							    <a id="toCelsius" href="#" class="display-6 font-weight-bold">&#8451;</a>
+							    <a id="toFarenheit" href="#" class="display-6 font-weight-bold">&#8457;</a>
+						   </div>
+						</div>
+		              		<span class="small" style="color: #868B94">[[${weatherData.weather[0].main}]] - [[${weatherData.weather[0].description}]]</span>
+		              	 <div class="d-flex align-items-center">
+					       <div class="flex-grow-1" style="font-size: 1rem;">
+						         <div class="d-flex justify-content-center align-items-center mt-2">
+								  	<div class="flex-column">
+								  		<div class="flex-column mb-2">
+								    		<i class="fas fa-sun fa-fw mr-2" style="color: #868B94;"></i> <span id="feels_like" class="ms-1"> Feels like [[${weatherData.main.feels_like}]] &#8451;</span>
+								    		<i class="fas fa-wind fa-fw ml-2" style="color: #868B94;"></i> <span id="wind" class="ms-1 "> Wind speed [[${weatherData.wind.speed}]] km/h</span>
+								    	</div>
+								        <div class="flex-column">
+								    		<i class="fas fa-tint fa-fw mr-2" style="color: #868B94;"></i> <span class="ms-1"> Humidity [[${weatherData.main.humidity}]] % </span>
+								    		<i class="fas fa-sun fa-fw ml-2" style="color: #868B94;"></i> <span class="ms-1"> Pressure [[${weatherData.main.pressure}]] hPa </span>
+								       </div>
+								    </div>       	   
+						        </div>
+		           			</div>
+		            	 </div>
+		          	  </div>
+		       	  </div>
+	      	  </div>
+	       </div>
+		</div>
+	  </div>
+	</section>
+
+	<script th:inline="javascript">
+
+		$(document).ready(function() {
+				$("#toCelsius").addClass("active");
+				$("#toCelsius, #toFarenheit").click(function() {
+				$("#toCelsius, #toFarenheit").removeClass("active");
+				$(this).addClass("active");
+			});
+		});
+
+		
+		document.querySelector("#weather-icon").src = "http://openweathermap.org/img/wn/" + [[${weatherData.weather[0].icon}]] + "@2x.png";
+		
+		
+		
+		var sunrise = new Date([[${weatherData.sys.sunrise}]] * 1000);
+		var sunset = new Date([[${weatherData.sys.sunset}]] * 1000);
+		
+		var sunriseHours = sunrise.getHours();
+		var sunriseMinutes = sunrise.getMinutes();
+		
+		var sunsetHours = sunset.getHours();
+		var sunsetMinutes = sunset.getMinutes();
+		
+		document.querySelector("#sunrise").innerHTML = "Sunrise " + sunriseHours + " : " + sunriseMinutes;
+		document.querySelector("#sunset").innerHTML = "Sunset " + sunsetHours + " : " + sunsetMinutes;
+		
+		
+		
+		
+		var currentHour = [[${date.getHours()}]];
+		
+		if (currentHour <= sunriseHours) {
+			document.body.style.backgroundImage = "url('/images/background/" +  [[${weatherData.weather[0].main}]] + "_night.png"; 
+		} else if (currentHour >= sunsetHours) {
+			document.body.style.backgroundImage = "url('/images/background/" +  [[${weatherData.weather[0].main}]] + "_night.png"; 
+		} else {
+			document.body.style.backgroundImage = "url('/images/background/" +  [[${weatherData.weather[0].main}]] + ".png"; 
+		}
+		
+		
+		
+		
+		var forecast = [[${forecast}]];
+		var forecasts = [];
+
+		
+		
+		for (var key in forecast) {
+			 
+			  var dailyForecast = forecast[key];
+			  var dailyData = [];
+			  
+			  for (var i = 0; i < dailyForecast.length; i++) {
+			    
+				  var weatherData = dailyForecast[i];
+			    
+			    dailyData.push({
+			      dt_txt: weatherData.dt_txt,
+			      temp: weatherData.main.temp,
+			      feels_like: weatherData.main.feels_like,
+			      temp_min: weatherData.main.temp_min,
+			      temp_max: weatherData.main.temp_max,
+			      pressure: weatherData.main.pressure,
+			      humidity: weatherData.main.humidity,
+			      weather: weatherData.weather[0]
+			    });
+			  }
+			  forecasts.push(dailyData);
+			}
+
+			console.log(forecasts);
+		
+			
+			const temperatureData = {
+				celsius: {
+					min: [[${weatherData.main.temp_min}]],
+				    max: [[${weatherData.main.temp_max}]],
+				    temp: [[${weatherData.main.temp}]],
+			        feels_like: [[${weatherData.main.feels_like}]],
+			        wind_speed: [[${weatherData.wind.speed}]],
+			        wind_unit: "km/h"
+			    },
+			    farenheit: {
+	    		    min: [[${weatherImperial.main.temp_min}]],
+				    max: [[${weatherImperial.main.temp_max}]],
+				    temp: [[${weatherImperial.main.temp}]],
+			        feels_like: [[${weatherImperial.main.feels_like}]],
+			        wind_speed: [[${weatherImperial.wind.speed}]],
+			        wind_unit: "mph"
+			    }
+			};
+
+			const temperatureUnit = {
+				celsius: "&#8451;",
+				farenheit: "&#8457;"
+			};
+
+			function updateTemperature(unit) {
+			    const {
+			      	  min,
+			     	  max,
+				      temp,
+				      feels_like,
+				      wind_speed,
+				      wind_unit
+				    } = temperatureData[unit];
+
+				document.querySelector("#min-temp").innerHTML = `Min ${min} ${temperatureUnit[unit]}`;
+			    document.querySelector("#max-temp").innerHTML = `Max ${max} ${temperatureUnit[unit]}`;
+			    document.querySelector("#temp").innerHTML = `${temp}`;
+			    document.querySelector("#feels_like").innerHTML = `Feels like ${feels_like} ${temperatureUnit[unit]}`;
+			    document.querySelector("#wind").innerHTML = `Wind speed ${wind_speed} ${wind_unit}`;
+			}
+
+			document.querySelector("#toCelsius").addEventListener("click", function() {
+			    updateTemperature("celsius");
+ 		    });
+
+		 	document.querySelector("#toFarenheit").addEventListener("click", function() {
+			    updateTemperature("farenheit");	    
+			});
+			
+		
+	</script>
+	
+	
+</body>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="ISO-8859-1">
+<title>Cities</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+
+<link rel="stylesheet" th:href="@{/css/table-style.css}">
+<link rel="stylesheet" th:href="@{/css/style.css}">
+<style type="text/css">
+
+	body {
+		background: url('/images/background/Search_background.jpg')
+	
+	}
+	
+</style>
+</head>
+<body class="element-flex">
+	
+	<nav id="nav" class="navbar fixed-top">
+  		<div class="container-fluid">
+  			<div class="nav-box element-flex">
+		    	<a  th:href="@{/}" style="color: white;">Weather app</a>
+		    </div>
+  		</div>
+	</nav>	
+		
+	
+	<div class="box element-flex">
+		<div class="box-table" style="overflow: auto;">
+			<div class="container animate-bottom">
+				<div class="city-name">
+					<h5 class="mt-3 mb-3">Results for [[${city}]]</h5>
+				</div>
+				
+				<table class="table">
+					<thead>
+						<tr>
+							<th>Weather</th>
+							<th>City</th>
+							<th>Temperature</th>
+							<th>Feels Like</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="city : ${cities}">
+						
+							<td> <img alt="" th:src="@{'http://openweathermap.org/img/wn/' + ${city.weather[0].icon} + '@2x.png'}"/> </td>
+							<td> <a th:href="@{/getWeather(city=${city.name})}"><b>[[${city.name}]], [[${city.sys.country}]]</b></a> </td>
+							<td th:text="${city.main.temp} + ' &#8451; / ' + ${#numbers.formatDecimal((city.main.temp * 1.8 + 32), 0, 0)} + ' &#8457; '"></td>
+							<td th:text="${city.main.feels_like} + ' &#8451; / ' + ${#numbers.formatDecimal((city.main.feels_like * 1.8 + 32), 0, 0)} + ' &#8457; '"></td>
+						</tr>
+					</tbody>
+				</table>
+				<div th:if="${cities.empty}">
+					<h6>No cities found</h6>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	
+</body>
+</html>
