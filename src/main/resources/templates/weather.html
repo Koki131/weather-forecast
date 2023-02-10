@@ -23,7 +23,7 @@
 	  <div class="container py-5 h-100">
 	
 	    <div class="row d-flex justify-content-center align-items-center h-100">
-	      <div>
+	      <div class="content-container">
 	
 	        <div class="card" style="border-radius: 35px;" id="card">
 	          <div class="card-body p-4 animate-bottom">
@@ -68,6 +68,35 @@
 						        </div>
 		           			</div>
 		            	 </div>
+						 <hr>
+		            	 <div class="wrapper">
+							  <ul th:each="days : ${forecast.keySet()}">
+							    <li style="display: inline;">
+							      <div class="forecast">
+							      
+							      		<div class="flex-column">
+								    		<i class="fas fa-tint fa-fw" style="color: #868B94;"></i> <span class="ms-1" style="font-size: 13px;" th:text="${forecast.get(days).get(0).getDt_txt()}">  </span>
+								    		<i class="fas fa-sun fa-fw" style="color: #868B94;"></i> <span class="ms-1" id="day" style="font-size: 13px;" th:text="${days}">  </span>
+								       </div>
+								       
+								       <img  alt="" 
+							        	th:src="@{'http://openweathermap.org/img/wn/' + ${forecast.get(days).get(0).getWeather().get(0).getIcon().substring(0, 2)} + 'd@2x.png'}"/>
+							        	
+							        	<div class="flex-column ">
+								        	<i class="fas fa-sun fa-fw" style="color: #868B94; "></i> <span id="dailyMax" class="ms-1" style="font-size: 20px;" 
+								        				th:text="${minMax.get(days).getMaxTemp()} + ' ' +  &#8451;">  </span>
+								        	
+								    		<i class="fas fa-tint fa-fw" style="color: #868B94;"></i> <span id="dailyMin" class="ms-1" style="font-size: 13px;"
+								    		 th:text="${minMax.get(days).getMinTemp()} + ' ' +  &#8451;">  </span>
+								       </div>
+								       
+								       <p style="font-size: 13px;" th:text="${forecast.get(days).get(0).getWeather().get(0).getMain()}"></p>
+								       
+							      </div>
+							    </li>
+							  </ul>
+						</div>
+						<div id="display-div"></div>
 		          	  </div>
 		       	  </div>
 	      	  </div>
@@ -77,28 +106,76 @@
 	</section>
 
 	<script th:inline="javascript">
+		
+	
+		const forecast = [[${forecast}]];
+		const forecastImperial = [[${forecastImperial}]];
+		
+		
+		
+		const links = document.querySelectorAll('.forecast');
+	  	links.forEach(function(link, index) {
+	  		
+	   		link.addEventListener('click', function(event) {
+	   			
+			      event.preventDefault();
+			      const dayValue = this.querySelector('#day').textContent;
+			      
+			      const dayValueInt = parseInt(dayValue, 10);
+			      
+			      const values = forecast[dayValueInt];
 
+			      // Get the display div
+			      const displayDiv = document.querySelector("#display-div");
+
+			      // Clear its contents
+			      displayDiv.innerHTML = "";
+					
+			      // Iterate over the values and add them to the display div
+			      for (var i = 0; i < values.length; i++) {
+			    	  
+			        const value = values[i];
+			        
+			        const valueDiv = document.createElement("div");
+			        valueDiv.classList.add("value-div");
+			        valueDiv.innerHTML = value.main.temp + "&#8451;";
+			        
+			        displayDiv.appendChild(valueDiv)
+			        
+			      }
+			      
+			      
+	    	});
+	   		
+	   		if (index === 0) {
+	   		    link.click();
+	   		}
+	   		
+	  	});
+	
+	
 		$(document).ready(function() {
 				$("#toCelsius").addClass("active");
-				$("#toCelsius, #toFarenheit").click(function() {
-				$("#toCelsius, #toFarenheit").removeClass("active");
-				$(this).addClass("active");
+				$("#toCelsius, #toFarenheit").click(function(event) {
+					event.preventDefault();
+					$("#toCelsius, #toFarenheit").removeClass("active");
+					$(this).addClass("active");
 			});
 		});
-
+		
 		
 		document.querySelector("#weather-icon").src = "http://openweathermap.org/img/wn/" + [[${weatherData.weather[0].icon}]] + "@2x.png";
 		
 		
 		
-		var sunrise = new Date([[${weatherData.sys.sunrise}]] * 1000);
-		var sunset = new Date([[${weatherData.sys.sunset}]] * 1000);
+		const sunrise = new Date([[${weatherData.sys.sunrise}]] * 1000);
+		const sunset = new Date([[${weatherData.sys.sunset}]] * 1000);
 		
-		var sunriseHours = sunrise.getHours();
-		var sunriseMinutes = sunrise.getMinutes();
+		const sunriseHours = sunrise.getHours();
+		const sunriseMinutes = sunrise.getMinutes();
 		
-		var sunsetHours = sunset.getHours();
-		var sunsetMinutes = sunset.getMinutes();
+		const sunsetHours = sunset.getHours();
+		const sunsetMinutes = sunset.getMinutes();
 		
 		document.querySelector("#sunrise").innerHTML = "Sunrise " + sunriseHours + " : " + sunriseMinutes;
 		document.querySelector("#sunset").innerHTML = "Sunset " + sunsetHours + " : " + sunsetMinutes;
@@ -106,12 +183,11 @@
 		
 		
 		
-		var currentHour = [[${date.getHours()}]];
+		const currentHour = [[${date.getHours()}]];
 		
-		if (currentHour <= sunriseHours) {
+		if (currentHour <= sunriseHours || currentHour >= sunsetHours) {
 			document.body.style.backgroundImage = "url('/images/background/" +  [[${weatherData.weather[0].main}]] + "_night.png"; 
-		} else if (currentHour >= sunsetHours) {
-			document.body.style.backgroundImage = "url('/images/background/" +  [[${weatherData.weather[0].main}]] + "_night.png"; 
+
 		} else {
 			document.body.style.backgroundImage = "url('/images/background/" +  [[${weatherData.weather[0].main}]] + ".png"; 
 		}
@@ -119,85 +195,93 @@
 		
 		
 		
-		var forecast = [[${forecast}]];
-		var forecasts = [];
-
-		
-		
-		for (var key in forecast) {
-			 
-			  var dailyForecast = forecast[key];
-			  var dailyData = [];
-			  
-			  for (var i = 0; i < dailyForecast.length; i++) {
-			    
-				  var weatherData = dailyForecast[i];
-			    
-			    dailyData.push({
-			      dt_txt: weatherData.dt_txt,
-			      temp: weatherData.main.temp,
-			      feels_like: weatherData.main.feels_like,
-			      temp_min: weatherData.main.temp_min,
-			      temp_max: weatherData.main.temp_max,
-			      pressure: weatherData.main.pressure,
-			      humidity: weatherData.main.humidity,
-			      weather: weatherData.weather[0]
-			    });
-			  }
-			  forecasts.push(dailyData);
-			}
-
-			console.log(forecasts);
-		
 			
-			const temperatureData = {
-				celsius: {
-					min: [[${weatherData.main.temp_min}]],
-				    max: [[${weatherData.main.temp_max}]],
-				    temp: [[${weatherData.main.temp}]],
-			        feels_like: [[${weatherData.main.feels_like}]],
-			        wind_speed: [[${weatherData.wind.speed}]],
-			        wind_unit: "km/h"
-			    },
-			    farenheit: {
-	    		    min: [[${weatherImperial.main.temp_min}]],
-				    max: [[${weatherImperial.main.temp_max}]],
-				    temp: [[${weatherImperial.main.temp}]],
-			        feels_like: [[${weatherImperial.main.feels_like}]],
-			        wind_speed: [[${weatherImperial.wind.speed}]],
-			        wind_unit: "mph"
-			    }
-			};
+		const temperatureData = {
+			celsius: {
+				min: [[${weatherData.main.temp_min}]],
+			    max: [[${weatherData.main.temp_max}]],
+			    temp: [[${weatherData.main.temp}]],
+		        feels_like: [[${weatherData.main.feels_like}]],
+		        wind_speed: [[${weatherData.wind.speed}]],
+		        wind_unit: "km/h"
+		    },
+		    farenheit: {
+	    	    min: [[${weatherImperial.main.temp_min}]],
+			    max: [[${weatherImperial.main.temp_max}]],
+			    temp: [[${weatherImperial.main.temp}]],
+		        feels_like: [[${weatherImperial.main.feels_like}]],
+		        wind_speed: [[${weatherImperial.wind.speed}]],
+		        wind_unit: "mph"
+		    }
+		};
 
-			const temperatureUnit = {
-				celsius: "&#8451;",
-				farenheit: "&#8457;"
-			};
+		const temperatureUnit = {
+			celsius: "&#8451;",
+			farenheit: "&#8457;"
+		};
 
-			function updateTemperature(unit) {
-			    const {
-			      	  min,
-			     	  max,
-				      temp,
-				      feels_like,
-				      wind_speed,
-				      wind_unit
-				    } = temperatureData[unit];
+		function updateTemperature(unit) {
+		    const {
+		      	  min,
+		     	  max,
+			      temp,
+			      feels_like,
+			      wind_speed,
+			      wind_unit
+		    } = temperatureData[unit];
 
-				document.querySelector("#min-temp").innerHTML = `Min ${min} ${temperatureUnit[unit]}`;
-			    document.querySelector("#max-temp").innerHTML = `Max ${max} ${temperatureUnit[unit]}`;
-			    document.querySelector("#temp").innerHTML = `${temp}`;
-			    document.querySelector("#feels_like").innerHTML = `Feels like ${feels_like} ${temperatureUnit[unit]}`;
-			    document.querySelector("#wind").innerHTML = `Wind speed ${wind_speed} ${wind_unit}`;
+			document.querySelector("#min-temp").innerHTML = `Min ${min} ${temperatureUnit[unit]}`;
+		    document.querySelector("#max-temp").innerHTML = `Max ${max} ${temperatureUnit[unit]}`;
+		    document.querySelector("#temp").innerHTML = `${temp}`;
+		    document.querySelector("#feels_like").innerHTML = `Feels like ${feels_like} ${temperatureUnit[unit]}`;
+		    document.querySelector("#wind").innerHTML = `Wind speed ${wind_speed} ${wind_unit}`;
+
+		    
+		}
+
+		
+		let isCelsius = true;
+		
+		document.querySelector("#toCelsius").addEventListener("click", function() {
+			
+			
+			if (!isCelsius) {
+				document.querySelectorAll(".forecast").forEach(forecast => {
+					
+					  const dailyMax = parseInt(forecast.querySelector("#dailyMax").textContent.split(" ")[0], 10);			  
+					  const dailyMin = parseInt(forecast.querySelector("#dailyMin").textContent.split(" ")[0], 10);	
+					   
+					  forecast.querySelector('#dailyMax').innerHTML = Math.round((dailyMax - 32) * 0.5556) + ' ' + '&#8451;';
+					  forecast.querySelector('#dailyMin').innerHTML = Math.round((dailyMin - 32) * 0.5556) + ' ' + '&#8451;';
+
+				});
+				
+				isCelsius = true;
+				
 			}
 
-			document.querySelector("#toCelsius").addEventListener("click", function() {
-			    updateTemperature("celsius");
- 		    });
+		    updateTemperature("celsius");
+ 	    });
 
-		 	document.querySelector("#toFarenheit").addEventListener("click", function() {
-			    updateTemperature("farenheit");	    
-			});
+	 	document.querySelector("#toFarenheit").addEventListener("click", function() {
+	 		
+	 		if (isCelsius) {
+	 			document.querySelectorAll(".forecast").forEach(forecast => {
+					
+					  const dailyMax = parseInt(forecast.querySelector("#dailyMax").textContent.split(" ")[0], 10);			  
+					  const dailyMin = parseInt(forecast.querySelector("#dailyMin").textContent.split(" ")[0], 10);						  
+  
+					  forecast.querySelector('#dailyMax').innerHTML = Math.round((dailyMax * 1.8) + 32) + ' ' + '&#8457;';
+					  forecast.querySelector('#dailyMin').innerHTML = Math.round((dailyMin * 1.8) + 32) + ' ' + '&#8457;';
+
+				});
+	 			
+	 			isCelsius = false;
+	 			
+	 		}
+
+		    updateTemperature("farenheit");	    
+		});
 			
 		
 	</script>
