@@ -48,7 +48,7 @@
 						<tr th:each="city : ${cities}">
 						
 							<td> <img alt="" th:src="@{'http://openweathermap.org/img/wn/' + ${city.weather[0].icon} + '@2x.png'}"/> </td>
-							<td> <a th:href="@{/getWeather(city=${city.name})}"><b>[[${city.name}]], [[${city.sys.country}]]</b></a> </td>
+							<td> <a th:href="@{/getWeather(lat=${city.coord.lat}, lon=${city.coord.lon})}"><b>[[${city.name}]], [[${city.sys.country}]]</b></a> </td>
 							<td th:text="${city.main.temp} + ' &#8451; / ' + ${#numbers.formatDecimal((city.main.temp * 1.8 + 32), 0, 0)} + ' &#8457; '"></td>
 							<td th:text="${city.main.feels_like} + ' &#8451; / ' + ${#numbers.formatDecimal((city.main.feels_like * 1.8 + 32), 0, 0)} + ' &#8457; '"></td>
 						</tr>
