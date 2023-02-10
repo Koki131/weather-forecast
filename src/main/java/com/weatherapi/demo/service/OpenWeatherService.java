@@ -7,7 +7,7 @@ import com.weatherapi.demo.model.WeatherData;
 public interface OpenWeatherService {
 
 	
-	WeatherData getWeatherMetric(String city);
+	WeatherData getWeatherMetric(double lat, double lon);
 	
 	Forecast getForecastMetric();
 	
