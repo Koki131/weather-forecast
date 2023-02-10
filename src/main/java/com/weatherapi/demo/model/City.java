@@ -8,6 +8,7 @@ public class City {
 	private Main main;
 	private Sys sys;
 	private List<Weather> weather;
+	private Coord coord;
 	
 	public String getName() {
 		return name;
@@ -40,10 +41,21 @@ public class City {
 	public void setWeather(List<Weather> weather) {
 		this.weather = weather;
 	}
+	
+	
+
+	public Coord getCoord() {
+		return coord;
+	}
+
+	public void setCoord(Coord coord) {
+		this.coord = coord;
+	}
 
 	@Override
 	public String toString() {
-		return "City [name=" + name + ", main=" + main + ", sys=" + sys + ", weather=" + weather + "]";
+		return "City [name=" + name + ", main=" + main + ", sys=" + sys + ", weather=" + weather + ", coord=" + coord
+				+ "]";
 	}
 
 	

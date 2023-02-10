@@ -12,6 +12,11 @@ public class Wind {
 	public void setSpeed(int speed) {
 		this.speed = speed;
 	}
+
+	@Override
+	public String toString() {
+		return "Wind [speed=" + speed + "]";
+	}
 	
 	
 }

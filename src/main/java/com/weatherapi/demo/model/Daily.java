@@ -7,6 +7,8 @@ public class Daily {
 	private Main main;
 	private List<Weather> weather;
 	private String dt_txt;
+	private Wind wind;
+	
 
 	public Main getMain() {
 		return main;
@@ -26,6 +28,14 @@ public class Daily {
 
 	
 
+	public Wind getWind() {
+		return wind;
+	}
+
+	public void setWind(Wind wind) {
+		this.wind = wind;
+	}
+
 	public List<Weather> getWeather() {
 		return weather;
 	}
@@ -36,7 +46,7 @@ public class Daily {
 
 	@Override
 	public String toString() {
-		return "Daily [main=" + main + ", weather=" + weather + ", dt_txt=" + dt_txt + "]";
+		return "Daily [main=" + main + ", weather=" + weather + ", dt_txt=" + dt_txt + ", wind=" + wind + "]";
 	}
 
 	
