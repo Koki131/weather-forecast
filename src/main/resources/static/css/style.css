@@ -6,10 +6,26 @@ body {
 	padding: 0;
   	background-position: center;
   	background-size: cover;
-  	background-position: center center;
+  	background-position: center;
    	height: 100vh;
-   	overflow: hidden;
 
+}
+@media (max-width: 1368px) {
+	body {
+		font-size: 13px;
+	}
+	
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+body {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
 
 
@@ -26,12 +42,10 @@ body {
 	background-size: cover;
   	background-position: center;
 	background: rgba(0, 0, 0, 0.33);
-	border-radius: 16px;
+	border-radius: 100px;
 	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 	backdrop-filter: blur(20px);
 	-webkit-backdrop-filter: blur(20px);
-	width: 80wh;
-	height: 80vh;
 }
 
 
@@ -57,8 +71,9 @@ body {
 	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 	backdrop-filter: blur(20px);
 	-webkit-backdrop-filter: blur(20px);
-
 }
+
+
 
 .nav-box {
 	width: 10%;
@@ -100,26 +115,38 @@ body {
 }
 
 
-
 .wrapper {
 	width: 100%;
 	height: 100%;
-	
-	
 }
 
 .forecast {
-	width: 100px;
-	height: 120px;
-	border: 1px solid white;
+	width: 100%;
+	height: 100%;
+	padding: 10px;
+	border-radius: 10px;
+}
+
+.forecast:hover {
+	background: rgba(240, 231, 231, 0.2);
+	border-radius: 16px;
+	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(0px);
+	-webkit-backdrop-filter: blur(0px);
+}
+
+.forecast.active {
+	background: rgba(240, 231, 231, 0.39);
+	border-radius: 16px;
+	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(0px);
+	-webkit-backdrop-filter: blur(0px);
 
 }
 
-
-
 .forecast img {
-	width: 40px;
-	height: 40px;
+	width: 40%;
+	height: 40%;
 }
 
 
@@ -128,14 +155,37 @@ ul {
 	margin: 20px;
 }
 
-
+#display-div {
+	width: 100%;
+	height: 100%;
+}
 
 .value-div {
-	width: 10%;
-	height: 100px;
+	width: 120px;
+	height: 130px;
 	display: inline-block;
-	margin: 10px;
-	border: 1px solid white;
+	margin: 20px;
+	background: rgba(240, 231, 231, 0.39);
+	border-radius: 16px;
+	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+	backdrop-filter: blur(0px);
+	-webkit-backdrop-filter: blur(0px);
+}
+
+
+.value-div img, p {
+	margin: 0;
+	padding: 0;
+}
+
+
+.value-div #hourly-weather, #time {
+	font-size: 13px;
+}
+
+.value-div img {
+	width: 40%;
+	height: 40%;
 }
 
 a {
@@ -154,11 +204,11 @@ a {
 }
 
 .mb {
-	margin-bottom: 20%;
+	margin-bottom: 20px;
 }
 
 .mt {
-	margin-top: 20%;
+	margin-top: 20px;
 }
 
 
@@ -187,22 +237,36 @@ a:hover {
 }
 
 
-.animate-bottom {
-  position: relative;
-  -webkit-animation-name: animatebottom;
-  -webkit-animation-duration: 1s;
-  animation-name: animatebottom;
-  animation-duration: 1s
+/* AIR QUALITY */
+
+#aqhi {
+  display: inline-block;
+  padding: 10px;
+  font-size: 18px;
+  text-align: center;
 }
 
-@-webkit-keyframes animatebottom {
-  from { bottom:-100px; opacity:0 } 
-  to { bottom:0px; opacity:1 }
+.good {
+  border-radius: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: #00C851;
+  color: #fff;
 }
 
-@keyframes animatebottom { 
-  from{ bottom:-100px; opacity:0 } 
-  to{ bottom:0; opacity:1 }
+.moderate {
+  border-radius: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: #FC9900;
+  color: #fff;
 }
 
+.unhealthy {
+  border-radius: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+  background-color: #FF4444;
+  color: #fff;
+}
 
