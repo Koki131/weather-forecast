@@ -61,14 +61,12 @@ public class WeatherController {
 		
 		
 		model.addAttribute("weatherData",  weatherService.getWeatherMetric(lat, lon));
-		
 		model.addAttribute("weatherImperial", data.weatherImperial(weatherService, lat, lon));
 		model.addAttribute("forecast", data.forecastMetric(weatherService));
-		model.addAttribute("forecastImperial", data.forecastImperial(data.forecastMetric(weatherService)));
 		model.addAttribute("minMax", minMax);
+		model.addAttribute("airQuality", weatherService.getAQI(lat, lon));
 		model.addAttribute("date", date);
 		
-		System.out.println(data.forecastImperial(data.forecastMetric(weatherService)));
 				
 		return "weather";
 	}
