@@ -3,30 +3,38 @@
 <head>
 <meta charset="ISO-8859-1">
 <title>Forecast</title>
+
+<!-- Bootstrap -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
 
+<!-- JQuery -->
 <script src="https://code.jquery.com/jquery-3.6.3.js" integrity="sha256-nQLuAZGRRcILA+6dMBOvcRh5Pe310sBpanc6+QBmyVM=" crossorigin="anonymous"></script>
 
+<!-- Animation -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.7.2/animate.min.css">
+
+<!-- CSS -->
 <link rel="stylesheet" th:href="@{/css/style.css}">
 </head>
 <body>
 	
-	<nav id="nav" class="navbar fixed-top">
+	<nav id="nav" class="navbar fixed-top animated fadeInUp">
   		<div class="container-fluid">
   			<div class="nav-box element-flex">
 		    	<a  th:href="@{/}" style="color: white;">Weather app</a>
 		    </div>
   		</div>
 	</nav>	
+
 	
-	<section class="vh-100">
-	  <div class="container py-5 h-100">
+	<section class="vh-100 mw-100 animated fadeInUp">
+	  <div class="container py-5 vh-100">
 	
 	    <div class="row d-flex justify-content-center align-items-center h-100">
 	      <div class="content-container">
 	
 	        <div class="card" style="border-radius: 35px;" id="card">
-	          <div class="card-body p-4 animate-bottom">
+	          <div class="card-body p-4">
 	
 	            <div class="d-flex">
 	              <h6 class="flex-grow-1">[[${weatherData.name}]], [[${weatherData.sys.country}]]</h6>
@@ -36,7 +44,7 @@
 	          		</div>
 	            </div>
 				
-		            <div class="d-flex flex-column text-center mb">
+		            <div class="d-flex flex-column text-center">
 		               <div>
 			             <img id="weather-icon" src="" width="100px">
 			           </div>
@@ -55,7 +63,7 @@
 		              	 <div class="d-flex align-items-center">
 					       <div class="flex-grow-1" style="font-size: 1rem;">
 						         <div class="d-flex justify-content-center align-items-center mt-2">
-								  	<div class="flex-column">
+								  	<div class="flex-column mr">
 								  		<div class="flex-column mb-2">
 								    		<i class="fas fa-sun fa-fw mr-2" style="color: #868B94;"></i> <span id="feels_like" class="ms-1"> Feels like [[${weatherData.main.feels_like}]] &#8451;</span>
 								    		<i class="fas fa-wind fa-fw ml-2" style="color: #868B94;"></i> <span id="wind" class="ms-1 "> Wind speed [[${weatherData.wind.speed}]] km/h</span>
@@ -64,6 +72,9 @@
 								    		<i class="fas fa-tint fa-fw mr-2" style="color: #868B94;"></i> <span class="ms-1"> Humidity [[${weatherData.main.humidity}]] % </span>
 								    		<i class="fas fa-sun fa-fw ml-2" style="color: #868B94;"></i> <span class="ms-1"> Pressure [[${weatherData.main.pressure}]] hPa </span>
 								       </div>
+								       <div class="flex-column">
+								    		<i class="fas fa-tint fa-fw mr-2" style="color: #868B94;"></i> <div id="aqhi"> AQHI <span id="aqhi-value" class="ml-2"> [[${airQuality.list[0].main.aqi}]]</span></div>
+								       </div> 
 								    </div>       	   
 						        </div>
 		           			</div>
@@ -72,10 +83,10 @@
 		            	 <div class="wrapper">
 							  <ul th:each="days : ${forecast.keySet()}">
 							    <li style="display: inline;">
-							      <div class="forecast">
+							      <div class="forecast ">
 							      
 							      		<div class="flex-column">
-								    		<i class="fas fa-tint fa-fw" style="color: #868B94;"></i> <span class="ms-1" style="font-size: 13px;" th:text="${forecast.get(days).get(0).getDt_txt()}">  </span>
+								    		<i class="fas fa-tint fa-fw" style="color: #868B94;"></i> <span class="ms-1" style="font-size: 13px;" th:text="${forecast.get(days).get(0).getDt_txt().substring(0, 3)}">  </span>
 								    		<i class="fas fa-sun fa-fw" style="color: #868B94;"></i> <span class="ms-1" id="day" style="font-size: 13px;" th:text="${days}">  </span>
 								       </div>
 								       
@@ -96,6 +107,7 @@
 							    </li>
 							  </ul>
 						</div>
+						<hr>
 						<div id="display-div"></div>
 		          	  </div>
 		       	  </div>
@@ -106,10 +118,11 @@
 	</section>
 
 	<script th:inline="javascript">
-		
 	
 		const forecast = [[${forecast}]];
-		const forecastImperial = [[${forecastImperial}]];
+		
+		let isCelsius = true;
+		
 		
 		
 		
@@ -119,6 +132,14 @@
 	   		link.addEventListener('click', function(event) {
 	   			
 			      event.preventDefault();
+			      
+			      links.forEach(function(link) {
+			          link.classList.remove('active');
+			      });
+			      
+			      
+			      this.classList.add('active');
+			      
 			      const dayValue = this.querySelector('#day').textContent;
 			      
 			      const dayValueInt = parseInt(dayValue, 10);
@@ -136,14 +157,56 @@
 			    	  
 			        const value = values[i];
 			        
+
 			        const valueDiv = document.createElement("div");
 			        valueDiv.classList.add("value-div");
-			        valueDiv.innerHTML = value.main.temp + "&#8451;";
+			        valueDiv.classList.add("animated");
+			        valueDiv.classList.add("fadeIn");
 			        
-			        displayDiv.appendChild(valueDiv)
+			        const img = document.createElement("img");
+			        img.src = "http://openweathermap.org/img/wn/" + value.weather[0].icon + "@2x.png";
+			        img.alt = "weather icon";
+			        img.id = "hourly-icon"
+
+			        const weather = document.createElement("p");
+			        weather.innerText = value.weather[0].main;
+			        weather.id = "hourly-weather";
 			        
+			        
+			        const temp = document.createElement("p");
+			        temp.id = "hourly-temp";
+			       	
+			       
+			        const time = document.createElement("p");
+			        time.id = "time";
+			        
+			        const timeValue = value.dt_txt.substring(3, value.dt_txt.length);
+			        
+			       	time.innerText = timeValue;
+			        
+			       	const hourMinutes = parseInt(time.textContent, 10);
+			        
+			       	if (hourMinutes <= 9) {
+			       		time.innerText = '0' + timeValue + '0';
+			       	} else {
+			       		time.innerText = timeValue + '0';
+			       	}
+			       	
+			       	
+			        if (isCelsius) {
+			        	temp.innerText = value.main.temp + ' \u00B0C';
+			        	
+			        } else {
+			        	temp.innerText =  Math.round((value.main.temp * 1.8) + 32) + ' \u00B0F';
+			        }
+			        
+			        displayDiv.appendChild(valueDiv);
+			        valueDiv.appendChild(time);
+			        valueDiv.appendChild(img);
+			        valueDiv.appendChild(temp);
+			        valueDiv.appendChild(weather);
+			         
 			      }
-			      
 			      
 	    	});
 	   		
@@ -152,6 +215,8 @@
 	   		}
 	   		
 	  	});
+	  	
+	  	
 	
 	
 		$(document).ready(function() {
@@ -240,8 +305,6 @@
 		}
 
 		
-		let isCelsius = true;
-		
 		document.querySelector("#toCelsius").addEventListener("click", function() {
 			
 			
@@ -255,6 +318,23 @@
 					  forecast.querySelector('#dailyMin').innerHTML = Math.round((dailyMin - 32) * 0.5556) + ' ' + '&#8451;';
 
 				});
+				
+
+	 			
+				const displayDiv = document.querySelector("#display-div");
+				
+				const valueDivs = displayDiv.querySelectorAll(".value-div");
+				
+	 			valueDivs.forEach(function(valueDiv) {
+
+	 				const tempInnerText = valueDiv.querySelector('#hourly-temp');
+	 				
+	 				const temp = parseInt(tempInnerText.textContent, 10);
+	 				tempInnerText.innerHTML = Math.round((temp - 32) * 0.5556) + ' \u00B0C';
+	 				
+	 				
+	 				
+	 			});
 				
 				isCelsius = true;
 				
@@ -276,6 +356,22 @@
 
 				});
 	 			
+	 			
+	 			const displayDiv = document.querySelector("#display-div");
+				
+	 			const valueDivs = displayDiv.querySelectorAll(".value-div");
+	 			
+	 			valueDivs.forEach(function(valueDiv) {
+	 				  
+	 				const tempInnerText = valueDiv.querySelector('#hourly-temp');
+	 				
+	 				const temp = parseInt(tempInnerText.textContent, 10);
+	 				tempInnerText.innerHTML = Math.round((temp * 1.8) + 32)  + ' \u00B0F';
+	 				
+	 				
+	 				
+	 			});
+	 			
 	 			isCelsius = false;
 	 			
 	 		}
@@ -283,7 +379,21 @@
 		    updateTemperature("farenheit");	    
 		});
 			
+	 	
+	 	// AIR QUALITY 
+	 	
+	 	const aqhiValue = document.querySelector("#aqhi-value");
+		const aqhi = parseInt(aqhiValue.textContent);
 		
+		if (aqhi <= 3) {
+		  aqhiValue.classList.add("good");
+		} else if (aqhi <= 6) {
+		  aqhiValue.classList.add("moderate");
+		} else {
+		  aqhiValue.classList.add("unhealthy");
+		}
+	 	
+
 	</script>
 	
 	
