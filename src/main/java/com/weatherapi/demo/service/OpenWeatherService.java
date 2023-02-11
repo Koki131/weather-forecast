@@ -1,5 +1,6 @@
 package com.weatherapi.demo.service;
 
+import com.weatherapi.demo.model.AQI;
 import com.weatherapi.demo.model.Cities;
 import com.weatherapi.demo.model.Forecast;
 import com.weatherapi.demo.model.WeatherData;
@@ -12,5 +13,7 @@ public interface OpenWeatherService {
 	Forecast getForecastMetric();
 	
 	Cities getCities(String city);
+	
+	AQI getAQI(double lat, double lon);
 	
 }

@@ -4,6 +4,8 @@ package com.weatherapi.demo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import com.weatherapi.demo.model.AQI;
 import com.weatherapi.demo.model.Cities;
 import com.weatherapi.demo.model.City;
 import com.weatherapi.demo.model.Forecast;
@@ -13,14 +15,15 @@ import com.weatherapi.demo.model.WeatherData;
 @Service
 public class OpenWeatherServiceImpl implements OpenWeatherService {
 	
-	private final String API_KEY = "53829db4458a895997e97265dc717c4f";
+	private final String API_KEY = "YOUR API KEY";
 	
 	private final String API_URL = "https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid=" + API_KEY + "&units=metric";
 	
 	private final String CITY_FINDER_URL = "https://api.openweathermap.org/data/2.5/find?q={city}&appid=" + API_KEY + "&units=metric";
-
 	
 	private final String FORECAST_URL = "http://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid=" + API_KEY + "&units=metric";
+	
+	private final String AQI_URL = "http://api.openweathermap.org/data/2.5/air_pollution?lat={lat}&lon={lon}&appid=" + API_KEY;
 
 
 	private double lat;
@@ -40,6 +43,7 @@ public class OpenWeatherServiceImpl implements OpenWeatherService {
 		
 		this.lat = lat;
 		this.lon = lon;
+		
 		
 		return response;
 	}
@@ -61,6 +65,15 @@ public class OpenWeatherServiceImpl implements OpenWeatherService {
 
 		
 		return cities;
+		
+	}
+
+	@Override
+	public AQI getAQI(double lat, double lon) {
+		
+		AQI airQuality = restTemplate.getForObject(AQI_URL, AQI.class, lat, lon);
+		
+		return airQuality;
 		
 	}
 
