@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 import com.weatherapi.demo.model.Daily;
 import com.weatherapi.demo.model.WeatherData;
@@ -31,7 +32,8 @@ public class Data {
 	
 	public Map<Integer, List<Daily>> forecastMetric(OpenWeatherService weatherService) {
 		
-		Map<Integer, List<Daily>> forecastMetric = new HashMap<>();
+		
+		TreeMap<Integer, List<Daily>> forecastMetric = new TreeMap<>();
 
 		
 		for (Daily forecast : weatherService.getForecastMetric().getList()) {
@@ -42,7 +44,7 @@ public class Data {
 		
 			int dayOfMonth = dt.getDayOfMonth();
 			
-			forecast.setDt_txt(dt.getDayOfWeek().toString());
+			forecast.setDt_txt(dt.getDayOfWeek().toString().substring(0, 3) + " " + dt.getHour() + " : " + dt.getMinute());
 			
 			
 			if (forecastMetric.containsKey(dayOfMonth)) {
@@ -69,46 +71,14 @@ public class Data {
 		for (Integer day : keysToRemove) {
 			forecastMetric.remove(day);
 		}
-
+		
+		
 		
 		return forecastMetric;
 		
 	}
 	
 	
-	public Map<Integer, List<Daily>> forecastImperial(Map<Integer, List<Daily>> forecastMetric) {
-		
-		Map<Integer, List<Daily>> forecastImperial = new HashMap<>();
-		
-		forecastImperial.putAll(forecastMetric);
-		
-
-		for (Integer forecast : forecastImperial.keySet()) {
-			
-			
-			
-			for (Daily day : forecastImperial.get(forecast)) {
-				
-				int temp = day.getMain().getTemp();
-				int minTemp = day.getMain().getTemp();
-				int maxTemp = day.getMain().getTemp();
-				int feelsLike = day.getMain().getFeels_like();
-				int windSpeed = day.getWind().getSpeed();
-				
-				
-				day.getMain().setTemp((int) (temp * 1.8) + 32);
-				day.getMain().setTemp_min((int) (minTemp * 1.8) + 32);
-				day.getMain().setTemp_max((int) (maxTemp * 1.8) + 32);
-				day.getMain().setFeels_like((int) (feelsLike * 1.8) + 32);
-				day.getWind().setSpeed((int) (windSpeed / 1.609344));
-			}
-			
-
-		}
-		
-		return forecastImperial;
-		
-	}
 	
 	public Map<Integer, MinMax> getMinMax(Map<Integer, List<Daily>> forecastMetric) {
 		
@@ -137,6 +107,7 @@ public class Data {
 			minMax.get(day).setMinTemp(min);
 			
 		}
+		
 		
 		return minMax;
 		
