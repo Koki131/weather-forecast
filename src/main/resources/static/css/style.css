@@ -10,12 +10,15 @@ body {
    	height: 100vh;
 
 }
+
+
 @media (max-width: 1368px) {
 	body {
 		font-size: 13px;
 	}
 	
 }
+
 
 /* Hide scrollbar for Chrome, Safari and Opera */
 body::-webkit-scrollbar {
@@ -27,6 +30,7 @@ body {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;  /* Firefox */
 }
+
 
 
 .element-flex {
@@ -123,7 +127,7 @@ body {
 .forecast {
 	width: 100%;
 	height: 100%;
-	padding: 10px;
+	padding: 5px;
 	border-radius: 10px;
 }
 
@@ -162,7 +166,7 @@ ul {
 
 .value-div {
 	width: 120px;
-	height: 130px;
+	height: 140px;
 	display: inline-block;
 	margin: 20px;
 	background: rgba(240, 231, 231, 0.39);
@@ -179,15 +183,58 @@ ul {
 }
 
 
-.value-div #hourly-weather, #time {
+
+#hourly-weather {
+	margin-bottom: 15px;
+}
+
+#hourly-weather, #hourly-time, #hourly-wind, #hourly-rain {
 	font-size: 13px;
 }
 
+
+
 .value-div img {
-	width: 40%;
-	height: 40%;
+	width: 30%;
+	height: 30%;
 }
 
+
+
+#child-div {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+
+}
+
+#wind-div {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+#data-icon-parent-div{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+
+#rain-div {
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-bottom: 10px;
+
+}
+
+#wind-icon, #rain-icon {
+	margin-right: 10%;
+}
 a {
 	text-decoration: none;
 	color: #fff;
@@ -269,4 +316,57 @@ a:hover {
   background-color: #FF4444;
   color: #fff;
 }
+
+/* Loader styling */
+
+.loader-wrapper {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #000;
+  background-repeat: no-repeat;
+  background-size: cover;
+  display:flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.loader {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  position: relative;
+  border: 4px solid #Fff;
+  animation: loader 2s infinite ease;
+}
+
+.loader-inner {
+  vertical-align: top;
+  display: inline-block;
+  width: 100%;
+  background-color: #fff;
+  animation: loader-inner 2s infinite ease-in;
+}
+
+
+@keyframes loader {
+  0% { transform: rotate(0deg);}
+  25% { transform: rotate(180deg);}
+  50% { transform: rotate(180deg);}
+  75% { transform: rotate(360deg);}
+  100% { transform: rotate(360deg);}
+}
+
+@keyframes loader-inner {
+  0% { height: 0%;}
+  25% { height: 0%;}
+  50% { height: 100%;}
+  75% { height: 100%;}
+  100% { height: 0%;}
+}
+
 
