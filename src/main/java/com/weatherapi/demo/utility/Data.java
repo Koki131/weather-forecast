@@ -72,8 +72,7 @@ public class Data {
 			forecastMetric.remove(day);
 		}
 		
-		
-		
+			
 		return forecastMetric;
 		
 	}
