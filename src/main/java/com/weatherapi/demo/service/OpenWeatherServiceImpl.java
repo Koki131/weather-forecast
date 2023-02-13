@@ -15,7 +15,7 @@ import com.weatherapi.demo.model.WeatherData;
 @Service
 public class OpenWeatherServiceImpl implements OpenWeatherService {
 	
-	private final String API_KEY = "YOUR API KEY";
+	private final String API_KEY = "YOUR API KEY"; // ENTER YOUR API KEY
 	
 	private final String API_URL = "https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid=" + API_KEY + "&units=metric";
 	
@@ -24,6 +24,8 @@ public class OpenWeatherServiceImpl implements OpenWeatherService {
 	private final String FORECAST_URL = "http://api.openweathermap.org/data/2.5/forecast?lat={lat}&lon={lon}&appid=" + API_KEY + "&units=metric";
 	
 	private final String AQI_URL = "http://api.openweathermap.org/data/2.5/air_pollution?lat={lat}&lon={lon}&appid=" + API_KEY;
+	
+	private final String FORECAST_AQI_URL = "http://api.openweathermap.org/data/2.5/air_pollution/forecast?lat={lat}&lon={lon}&appid=" + API_KEY;
 
 
 	private double lat;
@@ -52,7 +54,8 @@ public class OpenWeatherServiceImpl implements OpenWeatherService {
 	public Forecast getForecastMetric() {
 		
 		Forecast response = restTemplate.getForObject(FORECAST_URL, Forecast.class, lat, lon);
-
+		
+		
 		
 		return response;
 		

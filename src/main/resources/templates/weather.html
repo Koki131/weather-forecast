@@ -18,28 +18,50 @@
 
 <!-- CSS -->
 <link rel="stylesheet" th:href="@{/css/style.css}">
+
+<!-- Leaflet -->
+<script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+
+<!-- Windy API -->
+ <script src="https://api.windy.com/assets/map-forecast/libBoot.js"></script>
+ 
 </head>
 <body>
 	
-	<nav id="nav" class="navbar fixed-top animated fadeIn">
+	
+	 <nav id="nav" class="navbar fixed-top animated fadeIn">
   		<div class="container-fluid">
   			<div class="nav-box element-flex">
 		    	<a  th:href="@{/}" style="color: white;">Weather app</a>
 		    </div>
+		    <div style="flex: 1; text-align: center;"></div>
+		    <div class="nav-box element-flex">
+		    	<a  href="#" id="show-map-button" style="color: white;">Weather Map</a>
+		    	<a  href="#" id="show-forecast-button" style="color: white; display: none;">Forecast</a>
+		    </div>
   		</div>
-	</nav>	
+	</nav>	 
+
+
+     
 
 	<div class="loader-wrapper">
       <span class="loader"><span class="loader-inner"></span></span>
     </div>
 
-	
-	<section class="vh-100 mw-100 animated fadeInUp">
+	<section class="vh-100 mw-100  ">
 	  <div class="container py-4 vh-100">
-	
+
+		
+	    
 	    <div class="row d-flex justify-content-center align-items-center h-100">
-	      <div class="content-container">
-	
+	    
+	    <div class="windy-box card-body fade-in">
+	    	<div id="windy"></div>
+		</div>	    
+		
+	      <div class="content-container fade-in">
+		
 	        <div class="card" style="border-radius: 35px;" id="card">
 	          <div class="card-body">
 	
@@ -91,7 +113,7 @@
 					  <ul th:each="days : ${forecast.keySet()}">
 					    <li style="display: inline;">
 					     	<div class="forecast ">
-							      
+							    
 					      		<div class="flex-column">
 						    		<span class="ms-1" style="font-size: 13px;" th:text="${forecast.get(days).get(0).getDt_txt().substring(0, 3)}">  </span>
 						    		<span class="ms-1" id="day" style="font-size: 13px;" th:text="${days}">  </span>
@@ -124,8 +146,6 @@
  	  </div>
 	</section>
 
-	
-
 
 
 	<script th:inline="javascript">
@@ -141,6 +161,8 @@
 	  		
 	   		link.addEventListener('click', function(event) {
 	   			
+	   			  
+	   			
 			      event.preventDefault();
 			      
 			      // making the clicked day active
@@ -152,7 +174,7 @@
 			      
 			      this.classList.add('active');
 			      
-			      
+			    
 			      // getting the hourly forecast
 			      
 			      const dayValue = this.querySelector('#day').textContent;
@@ -165,6 +187,8 @@
 
 			      displayDiv.innerHTML = "";
 					
+			      
+			      
 			      // Iterate over the values and add them to the display div
 			      
 			      for (var i = 0; i < values.length; i++) {
@@ -505,6 +529,73 @@
 		    $('#loader-text').css('visibility', 'hidden');
 		});
 
+		
+		// WINDY API WEATHER MAP
+
+		 document.querySelector("#show-map-button").addEventListener("click", function() {
+
+	
+			const lat = [[${weatherData.coord.lat}]];
+			const lon = [[${weatherData.coord.lon}]];
+		
+
+			
+			const options = {
+				  key: 'YOUR API KEY', // ENTER YOUR API KEY
+				  verbose: true,
+				  lat,
+				  lon,
+				  zoom: 5,
+			};
+			
+		    document.querySelector(".content-container").classList.remove("fade-in");
+			document.querySelector(".windy-box").classList.add("fade-in");
+
+		    document.querySelector(".card").style.display = "none";
+		    document.querySelector(".windy-box").style.display = "flex";
+		    document.querySelector("#windy").style.display = "block";
+		    
+
+		    const weatherMapLink = document.querySelector("#show-map-button");
+		    const forecastLink = document.querySelector("#show-forecast-button");
+		    weatherMapLink.style.display = "none";
+		    forecastLink.style.display = "block"
+
+			windyInit(options, windyAPI => {
+			
+				const { map } = windyAPI;
+
+				
+			    map.setView([lat, lon], 5);
+			    L.popup()
+			      .setLatLng([lat, lon])
+			      .setContent([[${weatherData.name}]] + " " + [[${weatherData.main.temp}]] + ' \u00B0C') 
+			      .openOn(map);
+			  });
+			
+		});
+
+		 
+		 document.querySelector("#show-forecast-button").addEventListener("click", function(event) {
+				
+		      event.preventDefault();
+		      
+		      document.querySelector(".windy-box").classList.remove("fade-in");
+			  document.querySelector(".content-container").classList.add("fade-in");
+
+		      
+		      const weatherMapLink = document.querySelector("#show-map-button");
+		      const forecastLink = document.querySelector("#show-forecast-button");
+		      
+			  document.querySelector(".card").style.display = "block";
+			  document.querySelector(".windy-box").style.display = "none";
+			  document.querySelector("#windy").style.display = "none";
+			  
+			  weatherMapLink.style.display = "block";
+			  forecastLink.style.display = "none";	  
+			 
+		});
+		
 	 	
 
 	</script>

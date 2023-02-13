@@ -16,4 +16,5 @@ public interface OpenWeatherService {
 	
 	AQI getAQI(double lat, double lon);
 	
+	
 }
