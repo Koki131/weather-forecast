@@ -17,6 +17,7 @@ public class WeatherData {
 	private long dt;
 	private long timezone;
 	private Sys sys;
+	private Coord coord;
 	
 	
 	
@@ -77,11 +78,21 @@ public class WeatherData {
 		this.timezone = timezone;
 	}
 
+	
+	public Coord getCoord() {
+		return coord;
+	}
+
+	public void setCoord(Coord coord) {
+		this.coord = coord;
+	}
+
 	@Override
 	public String toString() {
 		return "WeatherData [name=" + name + ", weather=" + weather + ", main=" + main + ", wind=" + wind + ", dt=" + dt
-				+ ", timezone=" + timezone + ", sys=" + sys + "]";
+				+ ", timezone=" + timezone + ", sys=" + sys + ", coord=" + coord + "]";
 	}
+
 	
 	
 
