@@ -15,7 +15,7 @@ import com.weatherapi.demo.model.WeatherData;
 @Service
 public class OpenWeatherServiceImpl implements OpenWeatherService {
 	
-	private final String API_KEY = "YOUR API KEY"; // ENTER YOUR API KEY
+	private final String API_KEY = "YOUR API KEY";
 	
 	private final String API_URL = "https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid=" + API_KEY + "&units=metric";
 	
@@ -55,7 +55,7 @@ public class OpenWeatherServiceImpl implements OpenWeatherService {
 		
 		Forecast response = restTemplate.getForObject(FORECAST_URL, Forecast.class, lat, lon);
 		
-		
+		System.out.println(response);
 		
 		return response;
 		

@@ -9,6 +9,7 @@ public class Daily {
 	private String dt_txt;
 	private Wind wind;
 	private Rain rain;
+	private double pop;
 
 	public Main getMain() {
 		return main;
@@ -54,11 +55,22 @@ public class Daily {
 		this.rain = rain;
 	}
 
+	
+	public double getPop() {
+		return pop;
+	}
+
+	public void setPop(double pop) {
+		this.pop = pop;
+	}
+
 	@Override
 	public String toString() {
 		return "Daily [main=" + main + ", weather=" + weather + ", dt_txt=" + dt_txt + ", wind=" + wind + ", rain="
-				+ rain + "]";
+				+ rain + ", pop=" + pop + "]";
 	}
+
+	
 
 	
 	

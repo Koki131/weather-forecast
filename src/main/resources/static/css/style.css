@@ -76,6 +76,7 @@ body {
 	box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 	backdrop-filter: blur(10px);
 	-webkit-backdrop-filter: blur(10px); 
+	height: 94vh;
 }
 
 .box {
@@ -193,7 +194,7 @@ ul {
 
 .value-div {
 	width: 120px;
-	height: 140px;
+	height: 160px;
 	display: inline-block;
 	margin: 20px;
 	background: rgba(240, 231, 231, 0.39);
@@ -215,7 +216,7 @@ ul {
 	margin-bottom: 15px;
 }
 
-#hourly-weather, #hourly-time, #hourly-wind, #hourly-rain {
+#hourly-weather, #hourly-time, #hourly-wind, #hourly-rain, #hourly-percip {
 	font-size: 13px;
 }
 
@@ -236,13 +237,6 @@ ul {
 
 }
 
-#wind-div {
-	width: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
 #data-icon-parent-div{
 	display: flex;
 	align-items: center;
@@ -250,18 +244,23 @@ ul {
 }
 
 
-#rain-div {
-	width: 100%;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	margin-bottom: 10px;
-
+#wind-icon, #rain-icon, #percipitation-icon {
+	margin-right: 10%;
+	padding: 2px;
 }
 
-#wind-icon, #rain-icon {
+#icon-div {
+	display: flex;
+	flex-direction: column;
 	margin-right: 10%;
 }
+
+#data-div {
+	display: flex;
+	flex-direction: column;
+	align-items: start;
+}
+
 a {
 	text-decoration: none;
 	color: #fff;
@@ -400,65 +399,9 @@ a:hover {
 }
 
 @keyframes fade-in {
-  from { 
-  	opacity: 0;
-  	backdrop-filter: blur(10px);
-	-webkit-backdrop-filter: blur(10px);
-
-   }
-  to { 
-  	opacity: 1;
-  	backdrop-filter: blur(10px);
-	-webkit-backdrop-filter: blur(10px);
-
-  }
+  from {opacity: 0;}
+  to {opacity: 1;}
 }
 
 
-.highcharts-figure,
-.highcharts-data-table table {
-    min-width: 310px;
-    max-width: 800px;
-    margin: 1em auto;
-}
-
-#container {
-    height: 400px;
-}
-
-.highcharts-data-table table {
-    font-family: Verdana, sans-serif;
-    border-collapse: collapse;
-    border: 1px solid #ebebeb;
-    margin: 10px auto;
-    text-align: center;
-    width: 100%;
-    max-width: 500px;
-}
-
-.highcharts-data-table caption {
-    padding: 1em 0;
-    font-size: 1.2em;
-    color: #555;
-}
-
-.highcharts-data-table th {
-    font-weight: 600;
-    padding: 0.5em;
-}
-
-.highcharts-data-table td,
-.highcharts-data-table th,
-.highcharts-data-table caption {
-    padding: 0.5em;
-}
-
-.highcharts-data-table thead tr,
-.highcharts-data-table tr:nth-child(even) {
-    background: #f8f8f8;
-}
-
-.highcharts-data-table tr:hover {
-    background: #f1f7ff;
-}
 
