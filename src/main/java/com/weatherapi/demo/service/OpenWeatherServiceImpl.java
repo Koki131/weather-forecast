@@ -55,7 +55,6 @@ public class OpenWeatherServiceImpl implements OpenWeatherService {
 		
 		Forecast response = restTemplate.getForObject(FORECAST_URL, Forecast.class, lat, lon);
 		
-		System.out.println(response);
 		
 		return response;
 		
