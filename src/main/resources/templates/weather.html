@@ -176,12 +176,21 @@ Exporting module
 		
 		
 		const links = document.querySelectorAll('.forecast');
+		const showChartLink = document.querySelector("#show-chart");
+		const showValuesLink = document.querySelector("#show-values");
+		const displayDiv = document.querySelector("#display-div");
+		
+		let dayValInt = 0;
+		let dayValName = '';
+		
+		
+		let hourlyValues = [];
+
+				
 		
 	  	links.forEach(function(link, index) {
 	  		
 	   		link.addEventListener('click', function(event) {
-	   			
-	   			  
 	   			
 			      event.preventDefault();
 			      
@@ -205,334 +214,22 @@ Exporting module
 			      
 			      const values = forecast[dayValueInt];
 
-			      const displayDiv = document.querySelector("#display-div");
+			      
 				  
+			      hourlyValues = values;
+			      dayValInt = dayValueInt;
+				  dayValName = dayName;			      
 			      
 			      
 			      displayDiv.innerHTML = "";
-					
-			      
-			      function valueData() {
-			    	  
-			    	  for (var i = 0; i < values.length; i++) {
-				    	  
-					        const value = values[i];
-					       
-
-					        const valueDiv = document.createElement("div");
-					        valueDiv.classList.add("value-div");
-					        valueDiv.classList.add("animated");
-					        valueDiv.classList.add("fadeIn");
-					        
-					        const childDiv = document.createElement("div");
-					        childDiv.id = "child-div";
-					        
-					        
-					        const dataIconParentDiv = document.createElement("div");
-					        dataIconParentDiv.id = "data-icon-parent-div";
-					        
-					        const iconDiv = document.createElement("div");
-					        iconDiv.id = "icon-div";
-					        
-					        const dataDiv = document.createElement("div");
-					        dataDiv.id = "data-div";
-					        
-					        
-					        
-					        const windIcon = document.createElement("i");
-					        windIcon.id = "wind-icon";
-					        windIcon.classList.add("fas");
-					        windIcon.classList.add("fa-wind");
-					       
-					        const rainIcon = document.createElement("i");
-					        rainIcon.id = "rain-icon";
-					        rainIcon.classList.add("fas");
-					        rainIcon.classList.add("fa-cloud-rain");
-					        
-					        const percipitationIcon = document.createElement("i");
-					        percipitationIcon.id = "percipitation-icon";
-					        percipitationIcon.classList.add("fas");
-					        percipitationIcon.classList.add("fa-tint");
-					        
-					        const wind = document.createElement("p");
-					        wind.innerText = value.wind.speed;
-					        wind.id = "hourly-wind";
-					        
-					          
-					        const rain = document.createElement("p");
-					        rain.id = "hourly-rain"; 
-					        
-					        const percipitation = document.createElement("p");
-					        percipitation.id = "hourly-percip";
-					        percipitation.innerText = Math.round(value.pop * 100) + " %";
-					        
-					        if (value.rain == null || value.rain["3h"] == null) {
-					        	rain.innerText = 0 + " mm";
-					        } else {
-					        	rain.innerText = value.rain["3h"] + " mm";
-					        }
-					       	
-					        
-					        
-					        const img = document.createElement("img");
-					        img.src = "http://openweathermap.org/img/wn/" + value.weather[0].icon + "@2x.png";
-					        img.alt = "weather icon";
-					        img.id = "hourly-icon"
-
-					        
-					        const weather = document.createElement("p");
-					        weather.innerText = value.weather[0].main;
-					        weather.id = "hourly-weather";
-					        
-					       
-
-					        const temp = document.createElement("p");
-					        temp.id = "hourly-temp";
-					       	
-					       
-					        const time = document.createElement("p");
-					        time.id = "hourly-time";
-					        
-					        const timeValue = value.dt_txt.substring(3, value.dt_txt.length);
-					        
-					       	time.innerText = timeValue;
-					        
-					       	const hourMinutes = parseInt(time.textContent, 10);
-					        
-					       	if (hourMinutes <= 9) {
-					       		time.innerText = '0' + timeValue + '0';
-					       	} else {
-					       		time.innerText = timeValue + '0';
-					       	}
-					       	
-					       	
-					        if (isCelsius) {
-					        	temp.innerText = value.main.temp + ' \u00B0C';
-					        	wind.innerText = value.wind.speed + ' km/h';
-					        	
-					        } else {
-					        	temp.innerText = Math.round((value.main.temp * 1.8) + 32) + ' \u00B0F';
-					        	wind.innerText = Math.round(value.wind.speed / 1.609344) + ' mph';
-					        }
-					        
-					        displayDiv.appendChild(valueDiv);	
-					        valueDiv.appendChild(time);
-					        valueDiv.appendChild(childDiv);
-					        childDiv.appendChild(img);
-					        childDiv.appendChild(temp);
-					        valueDiv.appendChild(weather);
-					        valueDiv.appendChild(iconDiv);
-					        iconDiv.appendChild(windIcon);
-					        iconDiv.appendChild(rainIcon);
-					        iconDiv.appendChild(percipitationIcon);
-					        valueDiv.appendChild(dataDiv);
-					        valueDiv.appendChild(dataIconParentDiv);
-					        dataIconParentDiv.appendChild(iconDiv);
-					        dataDiv.appendChild(wind);
-					        dataDiv.appendChild(rain);
-					        dataDiv.appendChild(percipitation);
-					        dataIconParentDiv.appendChild(dataDiv);
-					        
-					        
-					      }
-			      }
-			      
-			      
+					 
 			      
 			      if (!dataDisplayType) {
-			    	  valueData();
+			    	  valueData(values);
 			      } else {
 			    	  displayDivAnimation();
-			    	  chartData();
+			    	  chartData(dayValueInt, dayName);
 			      }
-			      
-			      
-			      
-			      function chartData() {
-			    	  
-			    	  
-			    	  
-			    	  const newArray = forecast[dayValueInt].reduce((acc, item) => {
-						 	 acc.push({ [item.dt_txt]: item.main.temp });
-						   	 return acc;
-						  }, []);
-
-					  const precip = forecast[dayValueInt].reduce((acc, item) => {
-						  acc.push(Math.round(item.pop * 100));
-						  return acc;
-					  }, []);
-					  
-					  
-					  const windArray = forecast[dayValueInt].reduce((acc, item) => {
-						  acc.push(item.wind.speed);
-						  return acc;
-					  }, []);
-					  
-					  
-					  const xData = newArray.map(entry => Object.keys(entry)[0]);
-						  
-					  for (let n = 0; n < xData.length; n++) {
-						  let data = xData[n].substring(3, xData[n].length);
-						  let intData = parseInt(data, 10);
-					  
-						  if (intData <= 9) {
-							  xData[n] = '0' + intData + " : " + "00";
-						  } else {
-							  xData[n] = data + "0";
-						  }
-							  
-					  }
-					  
-				      const yData = newArray.map(entry => Object.values(entry)[0]);
-				      
-					
-				      Highcharts.chart('display-div', {
-				    	    chart: {
-				    	        zoomType: 'xy',
-				    	        backgroundColor: 'rgba(0, 0, 0, 0)',
-					    	    height: 200,
-				    	    },
-				    	    title: {
-				    	        text: dayName + " " + dayValue,
-				    	        style: {
-						    	      color: '#fff',
-						    	      fontSize: 13
-						    	}
-				    	    },
-				    	   
-				    	    xAxis: [{
-				    	        categories: xData,
-				    	        labels: {
-						    	      style: {
-						    	        color: '#fff'
-						    	      }						    	    
-				    	        },
-				    	        crosshair: true,
-				    	        
-				    	    }],
-				    	    yAxis: [{ // Primary yAxis
-				    	        labels: {
-				    	            format: '{value} \u00B0C',
-				    	            style: {
-				    	                color: '#fff'
-				    	            }
-				    	        },
-				    	        title: {
-				    	            text: 'Temperature',
-				    	            style: {
-				    	                color: '#fff'
-				    	            }
-				    	        },
-				    	        gridLineColor: 'rgba(255, 255, 255, 0.1)',
-				    	    }, { // Secondary yAxis
-				    	        title: {
-				    	            text: 'Precipitation',
-				    	            style: {
-				    	                color: '#fff'
-				    	            }
-				    	        },
-				    	        labels: {
-				    	            format: '{value} %',
-				    	            style: {
-				    	                color: '#fff'
-				    	            }
-				    	        },
-				    	        opposite: true,
-				    	        gridLineColor: 'rgba(255, 255, 255, 0.1)',
-				    	    }],
-				    	    tooltip: {
-				    	        shared: true
-				    	    },
-				    	    legend: {
-					    	    itemStyle: {
-					    	      color: '#fff'
-					    	    }
-					    	},
-				    	    series: [{
-				    	        name: 'Precipitation',
-				    	        type: 'column',
-				    	        yAxis: 1,
-				    	        data: precip,
-				    	        color: 'rgba(0, 150, 255, 0.4)',
-				    	        tooltip: {
-				    	            valueSuffix: ' %'
-				    	        },
-								borderWidth: 0
-				    	    }, {
-				    	        name: 'Temperature',
-				    	        type: 'spline',
-				    	        data: yData,
-				    	        color: 'rgba(255, 150, 0, 1)',
-				    	        tooltip: {
-				    	            valueSuffix: '<span style="color: #000;"> \u00B0C</span>'
-				    	        }
-				    	    }, {
-				    	        name: 'Wind speed',
-				    	        type: 'column',
-				    	        data: windArray,
-				    	        color: 'rgba(150, 255, 0, 0.4)',
-				    	        tooltip: {
-				    	            valueSuffix: ' km/h'
-				    	        },
-				    	        borderWidth: 0
-				    	    }]
-				    	});
-					
- 
-			      }
-			      
-			      function displayDivAnimation() {
-			 		 displayDiv.classList.add("animated");
-			    	 displayDiv.classList.add("fadeIn");
-			    	 
-			    	 setTimeout(() => {
-			    	   displayDiv.classList.remove("fadeIn");
-				   	 }, 500);  
-				 }
-				      
-			      
-			      
-			      
-			    const showChartLink = document.querySelector("#show-chart");
-			    const showValuesLink = document.querySelector("#show-values");
-			      
-			    
-			    showChartLink.addEventListener("click", function(event) {
-			    	  	
-			    	
-			    	displayDivAnimation();
-			    	  
-					event.preventDefault();
-						
-					chartData();
-						
-					dataDisplayType = true;
-					
-					
-					showChartLink.classList.add("data-options-active");
-					showValuesLink.classList.remove("data-options-active");
-					
-				});
-	 	
-			      
-			      
-			      
-			    showValuesLink.addEventListener("click", function(event) {
-					
-					 event.preventDefault();
-					 
-					 displayDiv.innerHTML = "";
-					 
-					 valueData();
-					 
-					 dataDisplayType = false;
-					 
-					 showValuesLink.classList.add("data-options-active");
-					 showChartLink.classList.remove("data-options-active");
-					 
-				 });
-				 
-			      
 			     
 			      
 	    	});
@@ -546,6 +243,337 @@ Exporting module
 	  	});
 	  	
 	  	
+	  	 showValuesLink.addEventListener("click", function(event) {
+				
+	  		 if (dataDisplayType) {
+	  			
+	  			displayDiv.innerHTML = "";
+	  			 
+	  			event.preventDefault();
+				 
+				
+					 
+				valueData(hourlyValues);
+					 
+				dataDisplayType = false;
+					 
+				showValuesLink.classList.add("data-options-active");
+				showChartLink.classList.remove("data-options-active");	
+	  			 
+	  		 }
+		    		 
+		});
+	  	 
+	  	showChartLink.addEventListener("click", function(event) {
+    	  	
+	    	if (!dataDisplayType) {
+	    		
+	    		displayDiv.innerHTML = "";
+	    		
+	    		displayDivAnimation();
+		    	  
+				event.preventDefault();
+					
+				chartData(dayValInt, dayValName);
+					
+				dataDisplayType = true;
+				
+				
+				showChartLink.classList.add("data-options-active");
+				showValuesLink.classList.remove("data-options-active");
+				
+	    	}
+	    
+		});
+	  	
+	  	// values data
+	  	
+	  	function valueData(values) {
+			
+			  const d = new Date();
+	    	  
+	    	  let start = d.getMilliseconds();
+	    	  
+	    	  for (var i = 0; i < values.length; i++) {
+		    	  
+			        const value = values[i];
+			       
+
+			        const valueDiv = document.createElement("div");
+			        valueDiv.classList.add("value-div");
+			        valueDiv.classList.add("animated");
+			        valueDiv.classList.add("fadeIn");
+			        
+			        const childDiv = document.createElement("div");
+			        childDiv.id = "child-div";
+			        
+			        
+			        const dataIconParentDiv = document.createElement("div");
+			        dataIconParentDiv.id = "data-icon-parent-div";
+			        
+			        const iconDiv = document.createElement("div");
+			        iconDiv.id = "icon-div";
+			        
+			        const dataDiv = document.createElement("div");
+			        dataDiv.id = "data-div";
+			        
+			        
+			        
+			        const windIcon = document.createElement("i");
+			        windIcon.id = "wind-icon";
+			        windIcon.classList.add("fas");
+			        windIcon.classList.add("fa-wind");
+			       
+			        const rainIcon = document.createElement("i");
+			        rainIcon.id = "rain-icon";
+			        rainIcon.classList.add("fas");
+			        rainIcon.classList.add("fa-cloud-rain");
+			        
+			        const percipitationIcon = document.createElement("i");
+			        percipitationIcon.id = "percipitation-icon";
+			        percipitationIcon.classList.add("fas");
+			        percipitationIcon.classList.add("fa-tint");
+			        
+			        const wind = document.createElement("p");
+			        wind.innerText = value.wind.speed;
+			        wind.id = "hourly-wind";
+			        
+			          
+			        const rain = document.createElement("p");
+			        rain.id = "hourly-rain"; 
+			        
+			        const percipitation = document.createElement("p");
+			        percipitation.id = "hourly-percip";
+			        percipitation.innerText = Math.round(value.pop * 100) + " %";
+			        
+			        if (value.rain == null || value.rain["3h"] == null) {
+			        	rain.innerText = 0 + " mm";
+			        } else {
+			        	rain.innerText = value.rain["3h"] + " mm";
+			        }
+			       	
+			        
+			        
+			        const img = document.createElement("img");
+			        img.src = "http://openweathermap.org/img/wn/" + value.weather[0].icon + "@2x.png";
+			        img.alt = "weather icon";
+			        img.id = "hourly-icon"
+
+			        
+			        const weather = document.createElement("p");
+			        weather.innerText = value.weather[0].main;
+			        weather.id = "hourly-weather";
+			        
+			       
+
+			        const temp = document.createElement("p");
+			        temp.id = "hourly-temp";
+			       	
+			       
+			        const time = document.createElement("p");
+			        time.id = "hourly-time";
+			        
+			        const timeValue = value.dt_txt.substring(3, value.dt_txt.length);
+			        
+			       	time.innerText = timeValue;
+			        
+			       	const hourMinutes = parseInt(time.textContent, 10);
+			        
+			       	if (hourMinutes <= 9) {
+			       		time.innerText = '0' + timeValue + '0';
+			       	} else {
+			       		time.innerText = timeValue + '0';
+			       	}
+			       	
+			       	
+			        if (isCelsius) {
+			        	temp.innerText = value.main.temp + ' \u00B0C';
+			        	wind.innerText = value.wind.speed + ' km/h';
+			        	
+			        } else {
+			        	temp.innerText = Math.round((value.main.temp * 1.8) + 32) + ' \u00B0F';
+			        	wind.innerText = Math.round(value.wind.speed / 1.609344) + ' mph';
+			        }
+			        
+			        displayDiv.appendChild(valueDiv);	
+			        valueDiv.appendChild(time);
+			        valueDiv.appendChild(childDiv);
+			        childDiv.appendChild(img);
+			        childDiv.appendChild(temp);
+			        valueDiv.appendChild(weather);
+			        valueDiv.appendChild(iconDiv);
+			        iconDiv.appendChild(windIcon);
+			        iconDiv.appendChild(rainIcon);
+			        iconDiv.appendChild(percipitationIcon);
+			        valueDiv.appendChild(dataDiv);
+			        valueDiv.appendChild(dataIconParentDiv);
+			        dataIconParentDiv.appendChild(iconDiv);
+			        dataDiv.appendChild(wind);
+			        dataDiv.appendChild(rain);
+			        dataDiv.appendChild(percipitation);
+			        dataIconParentDiv.appendChild(dataDiv);
+			        
+			        
+			      }
+	    	  
+	    	  let end = d.getMilliseconds();
+	    	  console.log("Value Data Runtime: " + (end - start) + " ms");
+			
+		}
+	  	
+	  	
+	  	function displayDivAnimation() {
+	 		 displayDiv.classList.add("animated");
+	    	 displayDiv.classList.add("fadeIn");
+	    	 
+	    	 setTimeout(() => {
+	    	   displayDiv.classList.remove("fadeIn");
+		   	 }, 500);  
+		 }
+	  	
+	  	
+	  	
+	  	// chart data
+	  	
+	  	function chartData(dayValueInt, dayValName) {
+			
+			  const d = new Date();
+	    	  let start = d.getMilliseconds();
+	    	  
+	    	  displayDiv.innerHTML = "";
+	    	  
+	    	  const newArray = forecast[dayValueInt].reduce((acc, item) => {
+				 	 acc.push({ [item.dt_txt]: item.main.temp });
+				   	 return acc;
+				  }, []);
+
+			  const precip = forecast[dayValueInt].reduce((acc, item) => {
+				  acc.push(Math.round(item.pop * 100));
+				  return acc;
+			  }, []);
+			  
+			  
+			  const windArray = forecast[dayValueInt].reduce((acc, item) => {
+				  acc.push(item.wind.speed);
+				  return acc;
+			  }, []);
+			  
+			  
+			  const xData = newArray.map(entry => Object.keys(entry)[0]);
+				  
+			  for (let n = 0; n < xData.length; n++) {
+				  let data = xData[n].substring(3, xData[n].length);
+				  let intData = parseInt(data, 10);
+			  
+				  if (intData <= 9) {
+					  xData[n] = '0' + intData + " : " + "00";
+				  } else {
+					  xData[n] = data + "0";
+				  }
+					  
+			  }
+			  
+		      const yData = newArray.map(entry => Object.values(entry)[0]);
+
+				
+			
+		      Highcharts.chart('display-div', {
+		    	    chart: {
+		    	        zoomType: 'xy',
+		    	        backgroundColor: 'rgba(0, 0, 0, 0)',
+			    	    height: 200,
+		    	    },
+		    	    title: {
+		    	        text: dayValName + " " + dayValueInt,
+		    	        style: {
+				    	      color: '#fff',
+				    	      fontSize: 13
+				    	}
+		    	    },
+		    	   
+		    	    xAxis: [{
+		    	        categories: xData,
+		    	        labels: {
+				    	      style: {
+				    	        color: '#fff'
+				    	      }						    	    
+		    	        },
+		    	        crosshair: true,
+		    	        
+		    	    }],
+		    	    yAxis: [{ // Primary yAxis
+		    	        labels: {
+		    	            format: '{value} \u00B0C',
+		    	            style: {
+		    	                color: '#fff'
+		    	            }
+		    	        },
+		    	        title: {
+		    	            text: 'Temperature',
+		    	            style: {
+		    	                color: '#fff'
+		    	            }
+		    	        },
+		    	        gridLineColor: 'rgba(255, 255, 255, 0.1)',
+		    	    }, { // Secondary yAxis
+		    	        title: {
+		    	            text: 'Precipitation',
+		    	            style: {
+		    	                color: '#fff'
+		    	            }
+		    	        },
+		    	        labels: {
+		    	            format: '{value} %',
+		    	            style: {
+		    	                color: '#fff'
+		    	            }
+		    	        },
+		    	        opposite: true,
+		    	        gridLineColor: 'rgba(255, 255, 255, 0.1)',
+		    	    }],
+		    	    tooltip: {
+		    	        shared: true
+		    	    },
+		    	    legend: {
+			    	    itemStyle: {
+			    	      color: '#fff'
+			    	    }
+			    	},
+		    	    series: [{
+		    	        name: 'Precipitation',
+		    	        type: 'column',
+		    	        yAxis: 1,
+		    	        data: precip,
+		    	        color: 'rgba(0, 150, 255, 0.4)',
+		    	        tooltip: {
+		    	            valueSuffix: ' %'
+		    	        },
+						borderWidth: 0
+		    	    }, {
+		    	        name: 'Temperature',
+		    	        type: 'spline',
+		    	        data: yData,
+		    	        color: 'rgba(255, 150, 0, 1)',
+		    	        tooltip: {
+		    	            valueSuffix: '<span style="color: #000;"> \u00B0C</span>'
+		    	        }
+		    	    }, {
+		    	        name: 'Wind speed',
+		    	        type: 'column',
+		    	        data: windArray,
+		    	        color: 'rgba(150, 255, 0, 0.4)',
+		    	        tooltip: {
+		    	            valueSuffix: ' km/h'
+		    	        },
+		    	        borderWidth: 0
+		    	    }]
+		    	});
+			
+		      let end = d.getMilliseconds();
+	    	  console.log("Chart Data Runtime: " + (end - start) + " ms");
+			
+		}
+	  	
 	
 	
 		$(document).ready(function() {
@@ -558,7 +586,10 @@ Exporting module
 		});
 		
 		
+		
+		
 		document.querySelector("#weather-icon").src = "http://openweathermap.org/img/wn/" + [[${weatherData.weather[0].icon}]] + "@2x.png";
+		
 		
 		
 		
@@ -617,6 +648,10 @@ Exporting module
 			farenheit: "&#8457;"
 		};
 
+		
+		
+		// Fetching Celsius/Farenheit
+		
 		function updateTemperature(unit) {
 		    const {
 		      	  min,
@@ -687,6 +722,7 @@ Exporting module
 
 		    updateTemperature("celsius");
  	    });
+		
 
 	 	document.querySelector("#toFarenheit").addEventListener("click", function() {
 	 		
@@ -768,7 +804,7 @@ Exporting module
 
 			
 			const options = {
-				  key: 'YOUR API KEY',
+				  key: 'YOUR WINDY API KEY',
 				  verbose: true,
 				  lat,
 				  lon,
