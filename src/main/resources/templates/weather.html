@@ -180,13 +180,15 @@ Exporting module
 		const showValuesLink = document.querySelector("#show-values");
 		const displayDiv = document.querySelector("#display-div");
 		
+		let currentLink;
+		
 		let dayValInt = 0;
 		let dayValName = '';
 		
 		
 		let hourlyValues = [];
 
-				
+		
 		
 	  	links.forEach(function(link, index) {
 	  		
@@ -214,7 +216,7 @@ Exporting module
 			      
 			      const values = forecast[dayValueInt];
 
-			      
+			      currentLink = link;
 				  
 			      hourlyValues = values;
 			      dayValInt = dayValueInt;
@@ -237,9 +239,7 @@ Exporting module
 	   		if (index === 0) {
 	   		    link.click();
 	   		}
-	   		
-	   		
-	   		
+	   			
 	  	});
 	  	
 	  	
@@ -250,8 +250,6 @@ Exporting module
 	  			displayDiv.innerHTML = "";
 	  			 
 	  			event.preventDefault();
-				 
-				
 					 
 				valueData(hourlyValues);
 					 
@@ -261,7 +259,7 @@ Exporting module
 				showChartLink.classList.remove("data-options-active");	
 	  			 
 	  		 }
-		    		 
+	  	
 		});
 	  	 
 	  	showChartLink.addEventListener("click", function(event) {
@@ -437,26 +435,65 @@ Exporting module
 	  	
 	  	function chartData(dayValueInt, dayValName) {
 			
+	  		  let newArray;
+	  		  let windArray;
+	  		  
+	  		  let tempUnit;
+	  		  let windUnit;
+	  		  let formatLabelUnit;
+	  		
 			  const d = new Date();
 	    	  let start = d.getMilliseconds();
 	    	  
 	    	  displayDiv.innerHTML = "";
 	    	  
-	    	  const newArray = forecast[dayValueInt].reduce((acc, item) => {
-				 	 acc.push({ [item.dt_txt]: item.main.temp });
-				   	 return acc;
-				  }, []);
+	    	  if (isCelsius) {
+	    		
+	    		  tempUnit = '<span style="color: #000;"> \u00B0C</span>';
+	    		  windUnit = ' km/h';
+	    		  formatLabelUnit = '{value} \u00B0C';
+	    		  
+	    		  newArray = forecast[dayValueInt].reduce((acc, item) => {
+					 	 acc.push({ [item.dt_txt]: item.main.temp });
+					   	 return acc;
+					  }, []);
 
-			  const precip = forecast[dayValueInt].reduce((acc, item) => {
+				
+		    	  windArray = forecast[dayValueInt].reduce((acc, item) => {
+					  acc.push(item.wind.speed);
+					  return acc;
+				  }, []);
+		    	  
+		    	  
+	    	  } else {
+	    		  
+	    		  tempUnit = '<span style="color: #000;"> \u00B0F</span>';
+	    		  windUnit = ' mph';
+	    		  formatLabelUnit = '{value} \u00B0F'
+	    		  
+	    		  newArray = forecast[dayValueInt].reduce((acc, item) => {
+					 	 acc.push({ [item.dt_txt]: Math.round((item.main.temp * 1.8) + 32) });
+					   	 return acc;
+					  }, []);
+
+				
+		    	  windArray = forecast[dayValueInt].reduce((acc, item) => {
+					  acc.push(Math.round(item.wind.speed / 1.609344));
+					  return acc;
+				  }, []); 
+	    		  
+		    	  
+		    	  
+	    	  }
+	    	  
+	    	  
+	    	  
+	    	  const precip = forecast[dayValueInt].reduce((acc, item) => {
 				  acc.push(Math.round(item.pop * 100));
 				  return acc;
 			  }, []);
 			  
-			  
-			  const windArray = forecast[dayValueInt].reduce((acc, item) => {
-				  acc.push(item.wind.speed);
-				  return acc;
-			  }, []);
+			
 			  
 			  
 			  const xData = newArray.map(entry => Object.keys(entry)[0]);
@@ -503,7 +540,7 @@ Exporting module
 		    	    }],
 		    	    yAxis: [{ // Primary yAxis
 		    	        labels: {
-		    	            format: '{value} \u00B0C',
+		    	            format: formatLabelUnit,
 		    	            style: {
 		    	                color: '#fff'
 		    	            }
@@ -555,7 +592,7 @@ Exporting module
 		    	        data: yData,
 		    	        color: 'rgba(255, 150, 0, 1)',
 		    	        tooltip: {
-		    	            valueSuffix: '<span style="color: #000;"> \u00B0C</span>'
+		    	            valueSuffix: tempUnit
 		    	        }
 		    	    }, {
 		    	        name: 'Wind speed',
@@ -563,7 +600,7 @@ Exporting module
 		    	        data: windArray,
 		    	        color: 'rgba(150, 255, 0, 0.4)',
 		    	        tooltip: {
-		    	            valueSuffix: ' km/h'
+		    	            valueSuffix: windUnit
 		    	        },
 		    	        borderWidth: 0
 		    	    }]
@@ -623,8 +660,11 @@ Exporting module
 		
 		
 		
-			
+		// Fetching Celsius/Farenheit
+		
+		
 		const temperatureData = {
+				
 			celsius: {
 				min: [[${weatherData.main.temp_min}]],
 			    max: [[${weatherData.main.temp_max}]],
@@ -650,9 +690,10 @@ Exporting module
 
 		
 		
-		// Fetching Celsius/Farenheit
+		
 		
 		function updateTemperature(unit) {
+			
 		    const {
 		      	  min,
 		     	  max,
@@ -712,11 +753,15 @@ Exporting module
 	 			const mainCard = document.querySelector('#content');
 	 			mainCard.classList.add('animated', 'fadeIn');
 	 			
+	 			
+	 			
 	 			setTimeout(function() {
 	 			    mainCard.classList.remove('animated', 'fadeIn');
 	 			}, 600);
 	 			
 				isCelsius = true;
+
+	 			currentLink.click();
 				
 			}
 
@@ -758,12 +803,16 @@ Exporting module
 	 			const mainCard = document.querySelector('#content');
 	 			mainCard.classList.add('animated', 'fadeIn');
 	 			
+	 			
+	 			
 	 			setTimeout(function() {
 	 			    mainCard.classList.remove('animated', 'fadeIn');
 	 			}, 600);
 	 			
 	 			
 	 			isCelsius = false;
+	 			
+	 			currentLink.click();
 	 			
 	 		}
 
