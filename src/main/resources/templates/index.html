@@ -39,8 +39,8 @@
 		<form action="#" th:action="@{/listCities}">
 			<div class="col-4 animated fadeInUp">
 				<div class="input-group">						
-					<input type="search" name="city" class="form-control" placeholder="Search for a city" required>
-					<input type="submit" class="btn btn-dark" value="Search">
+					<input id="search" type="search" name="city" class="form-control" placeholder="Search for a city" required>
+					<input onclick="return searchSubmit()" onsubmit="searchSubmit()" type="submit" class="btn btn-dark" value="Search">
 	 			</div>
 	 		</div>
  		</form>
@@ -56,6 +56,14 @@ $(window).on("load",function(){
     $(".loader-wrapper").fadeOut("slow");
     $('#loader-text').css('visibility', 'hidden');
 });
+function searchSubmit() {
+    let input = document.getElementById("search").value;
+    if (input.length < 3) {
+        alert("Please enter a city name with 3 or more characters.");
+        return false;
+    }
+    return true;
+}
 
 
 </script>

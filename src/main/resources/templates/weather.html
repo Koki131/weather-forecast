@@ -284,7 +284,7 @@ Exporting module
 	    
 		});
 	  	
-	  	// values data
+	  	// getting data for forecast values
 	  	
 	  	function valueData(values) {
 			
@@ -431,7 +431,7 @@ Exporting module
 	  	
 	  	
 	  	
-	  	// chart data
+	  	//  getting data for forecast chart
 	  	
 	  	function chartData(dayValueInt, dayValName) {
 			
@@ -447,6 +447,8 @@ Exporting module
 	    	  
 	    	  displayDiv.innerHTML = "";
 	    	  
+	    	  // getting forecast data based on temperature unit
+	    	  
 	    	  if (isCelsius) {
 	    		
 	    		  tempUnit = '<span style="color: #000;"> \u00B0C</span>';
@@ -456,7 +458,7 @@ Exporting module
 	    		  newArray = forecast[dayValueInt].reduce((acc, item) => {
 					 	 acc.push({ [item.dt_txt]: item.main.temp });
 					   	 return acc;
-					  }, []);
+				  }, []);
 
 				
 		    	  windArray = forecast[dayValueInt].reduce((acc, item) => {
@@ -474,7 +476,7 @@ Exporting module
 	    		  newArray = forecast[dayValueInt].reduce((acc, item) => {
 					 	 acc.push({ [item.dt_txt]: Math.round((item.main.temp * 1.8) + 32) });
 					   	 return acc;
-					  }, []);
+				  }, []);
 
 				
 		    	  windArray = forecast[dayValueInt].reduce((acc, item) => {
@@ -612,7 +614,8 @@ Exporting module
 		}
 	  	
 	
-	
+		// making celsius/farenheit links active
+	  	
 		$(document).ready(function() {
 				$("#toCelsius").addClass("active");
 				$("#toCelsius, #toFarenheit").click(function(event) {
@@ -628,7 +631,7 @@ Exporting module
 		document.querySelector("#weather-icon").src = "http://openweathermap.org/img/wn/" + [[${weatherData.weather[0].icon}]] + "@2x.png";
 		
 		
-		
+		// displaying sunrise/sunset time as HH:mm
 		
 		const sunrise = new Date([[${weatherData.sys.sunrise}]] * 1000);
 		const sunset = new Date([[${weatherData.sys.sunset}]] * 1000);
@@ -644,6 +647,7 @@ Exporting module
 		
 		
 		
+		// background change depending on time of day
 		
 		const currentHour = [[${date.getHours()}]];
 		
@@ -712,6 +716,8 @@ Exporting module
 		    
 		}
 
+		
+		
 		
 		document.querySelector("#toCelsius").addEventListener("click", function() {
 			
@@ -853,7 +859,7 @@ Exporting module
 
 			
 			const options = {
-				  key: 'YOUR WINDY API KEY',
+				  key: 'your-windy-api-key',
 				  verbose: true,
 				  lat,
 				  lon,
