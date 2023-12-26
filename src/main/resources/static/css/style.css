@@ -82,8 +82,8 @@ body {
 .data-options {
 	display: flex;
 	flex-direction: row;
-	position: relative;
-	left: 85%;
+	align-items: center;
+	justify-content: end;
 }
 
 .data-options-active {
@@ -425,6 +425,8 @@ a:hover {
 	-webkit-backdrop-filter: blur(10px);
   }
 }
+
+
 
 
 
