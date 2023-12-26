@@ -29,7 +29,7 @@
 	<nav id="nav" class="navbar fixed-top ">
   		<div class="container-fluid">
   			<div class="nav-box element-flex">
-		    	<a  th:href="@{/}" style="color: white;">Weather app</a>
+		    	<a id="first-link" th:href="@{/}" style="color: white;">Weather app</a>
 		    </div>
   		</div>
 	</nav>	
@@ -44,6 +44,10 @@
 	 			</div>
 	 		</div>
  		</form>
+		<span style="color: rgba(213,213,213,0.61); font-size: 0.7em; margin-top: 1em;">
+			Weather data provided by <a id="second-link" target="_blank" href="https://openweathermap.org/">OpenWeather</a>
+			<img style="width: 10%; height: 10%" th:src="@{/images/openweather.png}" alt="logo">
+		</span>
 	</div>
 
 	<div class="loader-wrapper">
