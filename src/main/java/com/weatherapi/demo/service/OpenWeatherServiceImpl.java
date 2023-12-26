@@ -16,7 +16,7 @@ import com.weatherapi.demo.model.WeatherData;
 public class OpenWeatherServiceImpl implements OpenWeatherService {
 
 	// Enter your OpenWeather API Key
-	private final String API_KEY = "your-openweather-api-key";
+	private final String API_KEY = "44d787fd0b69742e54064148525b2649";
 	
 	private final String API_URL = "https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid=" + API_KEY + "&units=metric";
 	
